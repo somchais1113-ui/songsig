@@ -1,4 +1,4 @@
-# Architecture v0.3
+# Architecture v0.4
 
 ## Product principle
 
@@ -67,4 +67,4 @@ Evidence belongs to the Workspace Data Library. Research Projects create links/f
 - Long-running/scheduled execution: future worker/cron layer
 - AI: adapter interfaces under `packages/ai`
 
-v0.3 intentionally resumes pending provider jobs when the UI returns. For unattended scheduled monitoring, add a background scheduler/worker instead of relying on a browser session.
+v0.4 intentionally resumes pending provider jobs when the UI returns. For unattended scheduled monitoring, add a background scheduler/worker instead of relying on a browser session.

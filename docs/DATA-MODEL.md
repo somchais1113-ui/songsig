@@ -1,4 +1,4 @@
-# Data Model v0.3
+# Data Model v0.4
 
 ## Workspace
 Ownership boundary for the Data Library and research outputs.

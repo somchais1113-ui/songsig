@@ -1,4 +1,4 @@
-# Apify Integration v0.3
+# Apify Integration v0.4
 
 ## Default Actor
 
@@ -16,7 +16,7 @@ The official API page currently demonstrates inputs including:
 }
 ```
 
-The v0.3 connector also exposes optional date/keyword fields used by the Actor input schema.
+The v0.4 connector also exposes optional date/keyword fields used by the Actor input schema.
 
 Reference: https://apify.com/apify/facebook-groups-scraper/api
 

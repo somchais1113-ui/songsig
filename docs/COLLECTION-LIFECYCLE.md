@@ -23,7 +23,7 @@ Facebook Group collection can outlive a normal HTTP request. A synchronous brows
 - user assumes refresh cancelled work
 - difficult cost accounting
 
-The v0.3 flow starts the provider, stores its run ID, then finalizes later.
+The v0.4 flow starts the provider, stores its run ID, then finalizes later.
 
 ## Provider finalization
 

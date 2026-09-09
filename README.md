@@ -1,8 +1,10 @@
-# Consumer Signal Engine v0.3.0
+# Consumer Signal Engine v0.4.0
 
 A persistent, evidence-first consumer research system for turning conversation data into reusable signals, validated insights, and opportunity decisions.
 
-v0.3 changes the prototype from a front-end dashboard into a **persistent acquisition + evidence architecture**:
+v0.4 keeps the **persistent acquisition + evidence architecture** introduced in v0.3 and adds a complete entry experience: a product landing page at `/`, an executive dashboard at `/dashboard`, and the existing detailed signal workspace behind it.
+
+Core system capabilities remain:
 
 - Paste a Facebook Group URL and validate/normalize it.
 - Estimate collection scope/cost before starting a provider run.
@@ -16,6 +18,12 @@ v0.3 changes the prototype from a front-end dashboard into a **persistent acquis
 - Prepare pgvector storage for semantic retrieval/embeddings.
 - Optional OpenAI batch tagging + embeddings from the Raw Signals page, with analysis results persisted back to PostgreSQL.
 - Keep Insights → Evidence links as durable Knowledge Base records, and flag insights for re-review when cited evidence is edited upstream.
+
+## v0.4 entry experience
+
+The application now starts with a dedicated product landing page at `/`, followed by an executive command-center dashboard at `/dashboard`. The detailed analysis workspace remains available at `/overview` and the existing source, library, review, research, insight, and opportunity routes are unchanged.
+
+**Recommended user flow:** `Landing → Executive Dashboard → Signal Workspace → Evidence / Research / Opportunities`.
 
 ## Product principle
 
@@ -216,7 +224,7 @@ docs/
   DEPLOYMENT-CHECKLIST.md
 ```
 
-## What v0.3 does not pretend to finish
+## What v0.4 does not pretend to finish
 
 The following are intentionally next layers rather than fake implementations:
 

@@ -1,4 +1,4 @@
-# Security and Privacy Baseline v0.3
+# Security and Privacy Baseline v0.4
 
 This project is intended for aggregated consumer research, not individual profiling.
 
@@ -13,7 +13,7 @@ This project is intended for aggregated consumer research, not individual profil
 
 ## Service-role warning
 
-v0.3 server API routes use `SUPABASE_SERVICE_ROLE_KEY` because the MVP does not yet include a complete sign-in flow.
+v0.4 server API routes use `SUPABASE_SERVICE_ROLE_KEY` because the MVP does not yet include a complete sign-in flow.
 
 Therefore:
 

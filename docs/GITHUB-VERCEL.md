@@ -1,13 +1,13 @@
 # GitHub + Vercel Setup
 
-See `DEPLOYMENT-CHECKLIST.md` for the complete v0.3 procedure.
+See `DEPLOYMENT-CHECKLIST.md` for the complete v0.4 procedure.
 
 ## GitHub
 
 ```bash
 git init
 git add .
-git commit -m "feat: Consumer Signal Engine v0.3 persistent architecture"
+git commit -m "feat: Consumer Signal Engine v0.4 persistent architecture"
 git branch -M main
 git remote add origin git@github.com:YOUR_ACCOUNT/consumer-signal-engine.git
 git push -u origin main

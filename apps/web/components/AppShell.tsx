@@ -1,12 +1,13 @@
 "use client";
 
-import { Bell, CircleGauge, Database, FileSearch, FlaskConical, FolderArchive, Lightbulb, Menu, Radar, Settings, ShieldCheck, Sparkles, Waypoints } from "lucide-react";
+import { Bell, CircleGauge, Database, FileSearch, FlaskConical, FolderArchive, Gauge, Lightbulb, Menu, Radar, Settings, ShieldCheck, Sparkles, Waypoints } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { PersistenceStatus } from "./PersistenceStatus";
 
 const nav = [
-  { href: "/overview", label: "Overview", icon: CircleGauge },
+  { href: "/dashboard", label: "Dashboard", icon: Gauge },
+  { href: "/overview", label: "Signal Overview", icon: CircleGauge },
   { href: "/sources", label: "Sources", icon: Database },
   { href: "/library", label: "Data Library", icon: FolderArchive },
   { href: "/signals", label: "Signals", icon: Radar },
@@ -18,6 +19,7 @@ const nav = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  if (pathname === "/") return <>{children}</>;
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -25,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="brand-mark"><Sparkles size={18}/></div>
           <div>
             <div className="brand-title">Consumer<br/>Signal Engine</div>
-            <div className="brand-sub">Research Intelligence · v0.3</div>
+            <div className="brand-sub">Research Intelligence · v0.4</div>
           </div>
         </div>
         <div>

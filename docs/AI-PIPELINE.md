@@ -1,4 +1,4 @@
-# AI Pipeline v0.3
+# AI Pipeline v0.4
 
 The acquisition layer and the analysis layer are intentionally separate. Collected evidence persists first; AI can be rerun later as taxonomy/models improve.
 

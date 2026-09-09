@@ -1,4 +1,4 @@
-# Product Specification v0.3
+# Product Specification v0.4
 
 ## Core questions
 
@@ -26,7 +26,7 @@ What do we believe, based on which supporting and contradicting evidence?
 ### Opportunities
 What is worth testing, building, communicating, or researching next?
 
-## v0.3 acceptance criteria
+## v0.4 acceptance criteria
 
 - Valid Facebook Group URL can be normalized by preflight.
 - Collection size is cost-estimated and hard-capped.
@@ -41,3 +41,14 @@ What is worth testing, building, communicating, or researching next?
 - Data model supports project reuse, tags, vectors, evidence graph, and historical metrics.
 - Demo mode is visually distinguished from persistent mode.
 - Provider-specific mapping remains isolated.
+
+## v0.4 entry experience acceptance criteria
+
+- `/` is a dedicated product landing page and does not show the workspace sidebar.
+- The primary landing CTA opens `/dashboard`.
+- `/dashboard` provides an executive summary before the detailed workspace.
+- Dashboard persistent counts come from `/api/dashboard` when Supabase is configured.
+- Demo mode is visibly identified and must not masquerade as live production data.
+- `/overview` remains the detailed signal overview and is explicitly separated from the executive dashboard.
+- Sidebar navigation contains both `Dashboard` and `Signal Overview`.
+- New entry surfaces are responsive at desktop, tablet, and mobile breakpoints.

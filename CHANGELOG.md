@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0
+
+- Added a full landing page at `/` with product positioning, workflow, persistence architecture, and dashboard preview.
+- Added an executive dashboard at `/dashboard` before the detailed signal workspace.
+- Added system-health, AI queue, human-review backlog, signal velocity, decision-priority, source-health, research-quality, pipeline, insight-pulse, and quick-action modules.
+- Added Dashboard and renamed Overview navigation to Signal Overview for clearer information architecture.
+- Landing page intentionally renders without the application sidebar; workspace routes retain the full AppShell.
+- Updated responsive behavior for desktop, tablet, and mobile entry experiences.
+
 ## v0.3.0 — Persistent acquisition + evidence architecture
 
 ### Added

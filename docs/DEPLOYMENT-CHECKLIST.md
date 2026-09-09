@@ -5,7 +5,7 @@
 ```bash
 git init
 git add .
-git commit -m "feat: Consumer Signal Engine v0.3 persistent data architecture"
+git commit -m "feat: Consumer Signal Engine v0.4 persistent data architecture"
 git branch -M main
 git remote add origin git@github.com:YOUR_ACCOUNT/consumer-signal-engine.git
 git push -u origin main

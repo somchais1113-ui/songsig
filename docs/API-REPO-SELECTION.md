@@ -64,7 +64,7 @@ Again, the package implements its own code.
 Repository:
 - https://github.com/Scognamiglio1969/radar-intelligence
 
-Useful as a product/feature reference, but **not incorporated into this package**. The earlier review identified AGPL-3.0 licensing implications for modified network services, so v0.3 avoids code-level dependency on it.
+Useful as a product/feature reference, but **not incorporated into this package**. The earlier review identified AGPL-3.0 licensing implications for modified network services, so v0.4 avoids code-level dependency on it.
 
 ## Provider replacement rule
 
