@@ -1,12 +1,14 @@
 "use client";
 
-import { Bell, CircleGauge, Database, FileSearch, FlaskConical, Lightbulb, Menu, Radar, Settings, ShieldCheck, Sparkles, Waypoints } from "lucide-react";
+import { Bell, CircleGauge, Database, FileSearch, FlaskConical, FolderArchive, Lightbulb, Menu, Radar, Settings, ShieldCheck, Sparkles, Waypoints } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { PersistenceStatus } from "./PersistenceStatus";
 
 const nav = [
   { href: "/overview", label: "Overview", icon: CircleGauge },
   { href: "/sources", label: "Sources", icon: Database },
+  { href: "/library", label: "Data Library", icon: FolderArchive },
   { href: "/signals", label: "Signals", icon: Radar },
   { href: "/review", label: "Human Review", icon: ShieldCheck },
   { href: "/research", label: "Research", icon: FlaskConical },
@@ -23,14 +25,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="brand-mark"><Sparkles size={18}/></div>
           <div>
             <div className="brand-title">Consumer<br/>Signal Engine</div>
-            <div className="brand-sub">Research Intelligence</div>
+            <div className="brand-sub">Research Intelligence · v0.3</div>
           </div>
         </div>
         <div>
           <div className="nav-group-title">Workspace</div>
           <nav className="nav">
             {nav.map(({href,label,icon:Icon}) => (
-              <Link key={href} href={href} className={`nav-link ${pathname===href ? "active":""}`}>
+              <Link key={href} href={href} className={`nav-link ${pathname===href || pathname.startsWith(`${href}/`) ? "active":""}`}>
                 <Icon size={18}/><span>{label}</span>
               </Link>
             ))}
@@ -44,9 +46,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Link>
           </nav>
         </div>
-        <div className="sidebar-footer">
-          <div className="status"><i className="status-dot"/><span>Prototype data online</span></div>
-        </div>
+        <div className="sidebar-footer"><PersistenceStatus/></div>
       </aside>
       <main className="main">
         <header className="topbar">

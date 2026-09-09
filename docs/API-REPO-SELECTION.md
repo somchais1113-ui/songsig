@@ -1,40 +1,84 @@
-# API and Repository Selection
+# API / Repository Selection
 
-## 1. Facebook Groups acquisition — Apify
+This package is intentionally **clean-room application code**. It does not copy the source code of the reference social-listening repositories below.
 
-**Use:** External acquisition layer.
+## Production acquisition choice: Apify-maintained Facebook Groups Scraper
 
-Why:
-- avoids maintaining brittle browser selectors in the core application;
-- callable through API;
-- provider can be replaced without redesigning the database;
-- suitable for prototyping public-group research and provider-specific compliant workflows.
+Default:
 
-Implementation:
-- `APIFY_FACEBOOK_GROUPS_ACTOR_ID` is configurable.
-- inspect the selected Actor's live output before freezing the mapper.
-- do not store credentials in frontend code.
+```text
+apify/facebook-groups-scraper
+```
 
-## 2. Harken — architectural reference
+Role:
 
-Use its adapter/normalization philosophy as inspiration, not copied code. The engine in this package implements its own connector contract.
+- Facebook public-group acquisition layer
+- receives Group URLs
+- returns dataset rows through Apify API
+- replaceable via `APIFY_FACEBOOK_GROUPS_ACTOR_ID`
 
-## 3. OpenMagpie — architectural reference
+Official API example currently uses:
 
-Use its watch/filter/action pattern as inspiration for future monitoring and alerts.
+```json
+{
+  "startUrls": [{"url":"https://www.facebook.com/groups/..."}],
+  "resultsLimit": 20,
+  "viewOption": "CHRONOLOGICAL"
+}
+```
 
-## 4. Radar Intelligence — do not embed
+Reference:
+- https://apify.com/apify/facebook-groups-scraper/api
 
-Do not copy or fork code into this package unless you deliberately choose to comply with AGPL-3.0 obligations. It can still be studied as a product/architecture reference.
+Reason selected:
 
-## 5. Supabase
+- maintained provider rather than a brittle CSS-selector scraper embedded in our product
+- async Actor runs and durable datasets
+- API integration is isolated behind our connector
+- cost can be guarded before run
 
-Use PostgreSQL as the canonical research database. The schema deliberately separates raw evidence, normalized observations, insights and opportunities.
+It does **not** remove Facebook Terms/privacy/access risks. Public URLs may still produce partial or failed collections.
 
-## 6. AI provider
+## Reference architecture: Harken
 
-Keep provider-agnostic. Implement Tagger, Researcher and Challenger interfaces. This prevents the research workflow from depending on one model vendor.
+Repository:
+- https://github.com/VladUZH/harken
 
-## Facebook access warning
+Use from it:
+- conceptual inspiration for source adapters / normalization boundaries
 
-Facebook data access is volatile. Public/private availability, terms, authentication and actor behavior can change. Treat Facebook collection as a replaceable connector and confirm current platform rules before production use. Avoid collecting unnecessary personal identifiers; prefer aggregate research and anonymized evidence.
+Do not vendor/copy its implementation into this package unless you separately review current license/version and deliberately decide to do so.
+
+## Reference architecture: OpenMagpie
+
+Repository:
+- https://github.com/obris-dev/openmagpie
+
+Use from it:
+- conceptual inspiration for watch / semantic-filter / action flow
+
+Again, the package implements its own code.
+
+## Radar Intelligence
+
+Repository:
+- https://github.com/Scognamiglio1969/radar-intelligence
+
+Useful as a product/feature reference, but **not incorporated into this package**. The earlier review identified AGPL-3.0 licensing implications for modified network services, so v0.3 avoids code-level dependency on it.
+
+## Provider replacement rule
+
+Anything provider-specific belongs under:
+
+```text
+packages/connectors/
+```
+
+Everything downstream consumes normalized records. Changing the Facebook provider must not require rewriting:
+
+- Data Library
+- observations
+- AI taxonomy
+- evidence graph
+- Insight Board
+- opportunity scoring

@@ -1,59 +1,70 @@
-# Architecture
+# Architecture v0.3
 
 ## Product principle
 
-The engine is not a scraper dashboard. It is a decision-support system with evidence traceability.
+The engine is a persistent decision-support system with evidence traceability, not a one-session scraper dashboard.
 
 ```text
-Data Sources
+External Sources
    │
    ├─ Facebook Groups / Apify
    ├─ CSV / Manual Research
-   ├─ YouTube
-   ├─ Reddit
+   ├─ YouTube / Reddit (next connectors)
    └─ Future providers
    ↓
-Connector Layer
+Replaceable Connector Layer
    ↓
-Raw Items (immutable evidence)
+Collection Job (durable provider run ID)
    ↓
-Normalization / anonymization / deduplication
+Immutable Raw Snapshot (Supabase Storage)
    ↓
-Observations
+Raw Items (PostgreSQL evidence rows)
    ↓
-AI Tagging + Clustering
+Deduplicate / Normalize / Anonymize
    ↓
-Human Review
+Observations (workspace Data Library)
+   ↓
+Tags + Embeddings + Clusters
+   ↓
+Project lens / Human Review
    ↓
 Researcher Agent
    ↓
 Challenger Agent
    ↓
-Validated Insight
+Validated Insight ↔ Evidence Graph
    ↓
 Opportunity Scoring
    ↓
 Product / Marketing / Design action
 ```
 
-## Why raw and observation layers are separate
+## Browser responsibility
 
-`raw_items` preserve original evidence and provider payloads. `observations` contain normalized, anonymized, research-ready text and annotations. This allows the taxonomy to evolve without destroying the original source.
+The browser is a view/controller, not data storage in persistent mode. Refreshing it does not erase collection jobs, evidence, or insights.
 
-## Connector boundary
+Demo mode uses localStorage only to make the UI usable before credentials are configured. It is visibly labelled as demo-local.
 
-Every external source must map into the `RawSourceItem` contract. Provider-specific schemas remain inside the connector package. Do not leak Apify-specific fields into research logic.
+## Collection boundary
 
-## AI boundary
+Provider-specific input/output stays inside `packages/connectors`. Downstream tables should not need Apify field names.
 
-The first AI pass is organizational, not strategic. Tagger classifies. Researcher proposes hypotheses. Challenger attempts to falsify them. Humans retain authority over validation.
+## Storage boundary
+
+- Supabase Storage: immutable raw run snapshots.
+- PostgreSQL: rows, relationships, research state, metrics.
+- pgvector: semantic retrieval after an embedding model is selected.
+
+## Project boundary
+
+Evidence belongs to the Workspace Data Library. Research Projects create links/filters over that library instead of copying the dataset.
 
 ## Deployment target
 
-- Web: Vercel
-- Database: Supabase PostgreSQL
-- Ingestion: Vercel route for light jobs; queue/worker for production workloads
-- External collection: Apify or replaceable provider
-- AI: provider-agnostic adapter
+- Web/API: Vercel or equivalent Next.js host
+- DB/Storage: Supabase
+- Acquisition: Apify or replacement provider
+- Long-running/scheduled execution: future worker/cron layer
+- AI: adapter interfaces under `packages/ai`
 
-For high-volume ingestion, move collection and analysis into background jobs rather than a request/response Vercel function.
+v0.3 intentionally resumes pending provider jobs when the UI returns. For unattended scheduled monitoring, add a background scheduler/worker instead of relying on a browser session.

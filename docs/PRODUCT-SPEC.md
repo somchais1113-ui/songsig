@@ -1,37 +1,43 @@
-# Product specification
+# Product Specification v0.3
 
-## Main user questions
+## Core questions
 
 ### Overview
 What changed? What matters? Where is evidence getting stronger?
 
 ### Sources
-What are we listening to and is acquisition healthy?
+What are we collecting, can the provider access it, what will it cost, and is it being watched?
 
-### Signals
-What did people actually say?
+### Data Library
+What evidence has already been acquired and can be reused without recollecting it?
 
-### Review
-Is the AI classification relevant and strategically useful?
+### Raw Signals
+What did people actually say in normalized/anonymized observations?
+
+### Human Review
+Which classifications or weak signals should a researcher validate, watch, or reject?
 
 ### Research
-What hypothesis is emerging and what could disprove it?
+What hypothesis is emerging and what would disprove it?
 
 ### Insights
-What do we believe, based on what evidence?
+What do we believe, based on which supporting and contradicting evidence?
 
 ### Opportunities
-What is worth testing, building or communicating?
+What is worth testing, building, communicating, or researching next?
 
-## MVP acceptance criteria
+## v0.3 acceptance criteria
 
-- User can navigate every core workspace.
-- User can browse realistic evidence.
-- Search/filter works in Raw Signals.
-- Human review actions update in the UI.
-- Source toggles and add-source modal work in the UI.
-- Research hypothesis displays supporting evidence and challenges.
-- Opportunity cards expose scoring inputs.
-- Health API responds.
-- Apify endpoint handles configured/unconfigured state.
-- Application builds successfully.
+- Valid Facebook Group URL can be normalized by preflight.
+- Collection size is cost-estimated and hard-capped.
+- Source can persist in Supabase.
+- External collection starts asynchronously and its provider run ID persists.
+- Pending jobs are discoverable after refresh and can resume finalization.
+- Successful run writes a raw Storage snapshot.
+- Raw rows are deduplicated.
+- Author identity is hashed before normalized observations are created.
+- Data Library reads persistent source/evidence counts.
+- Raw Signals reads stored observations when Supabase is configured.
+- Data model supports project reuse, tags, vectors, evidence graph, and historical metrics.
+- Demo mode is visually distinguished from persistent mode.
+- Provider-specific mapping remains isolated.

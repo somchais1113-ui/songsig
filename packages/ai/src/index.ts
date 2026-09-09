@@ -1,32 +1,49 @@
-import type { Observation, Insight } from "@cse/core";
+export type TaxonomyTag = {
+  dimension: "topic" | "intent" | "sentiment" | "pain_point" | "pain_intensity" | "jtbd" | "use_case" | "brand" | "surface" | string;
+  value: string;
+  confidence: number;
+};
 
-export type TaggingResult = Pick<Observation, "topic"|"intent"|"sentiment"|"painIntensity"|"confidence"|"tags">;
+export type TaggingResult = {
+  observationId: string;
+  language?: string;
+  relevanceScore: number;
+  tags: TaxonomyTag[];
+};
 
 export interface Tagger {
-  tag(text: string): Promise<TaggingResult>;
+  tag(input: {observationId:string;text:string;context?:Record<string,unknown>}): Promise<TaggingResult>;
 }
 
+export type EvidenceReference = {
+  observationId: string;
+  role: "supporting" | "contradicting" | "context";
+  weight: number;
+};
+
 export type ResearchResult = {
+  title: string;
   hypothesis: string;
-  evidenceIds: string[];
-  contradictions: string[];
+  summary: string;
+  evidence: EvidenceReference[];
   confidence: number;
 };
 
 export interface Researcher {
-  analyze(observations: Observation[]): Promise<ResearchResult>;
+  analyze(input: {projectId:string;observations:Array<{id:string;text:string;tags:TaxonomyTag[]}>}): Promise<ResearchResult[]>;
 }
 
 export type ChallengeResult = {
+  insightTitle: string;
   risks: string[];
   alternativeExplanations: string[];
   additionalEvidenceNeeded: string[];
 };
 
 export interface Challenger {
-  challenge(result: ResearchResult, observations: Observation[]): Promise<ChallengeResult>;
+  challenge(input: ResearchResult): Promise<ChallengeResult>;
 }
 
-export interface InsightRepository {
-  save(insight: Insight): Promise<void>;
+export interface EmbeddingProvider {
+  embed(texts:string[]): Promise<{provider:string;model:string;dimensions:number;vectors:number[][]}>;
 }

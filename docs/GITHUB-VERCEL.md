@@ -1,11 +1,13 @@
-# GitHub + Vercel setup
+# GitHub + Vercel Setup
 
-## Create repository
+See `DEPLOYMENT-CHECKLIST.md` for the complete v0.3 procedure.
+
+## GitHub
 
 ```bash
 git init
 git add .
-git commit -m "feat: Consumer Signal Engine v0.2.0"
+git commit -m "feat: Consumer Signal Engine v0.3 persistent architecture"
 git branch -M main
 git remote add origin git@github.com:YOUR_ACCOUNT/consumer-signal-engine.git
 git push -u origin main
@@ -13,29 +15,16 @@ git push -u origin main
 
 ## Vercel
 
-1. Import the repository in Vercel.
+1. Import the repository.
 2. Framework: Next.js.
-3. Root directory: repository root.
-4. Build command: `npm run build`.
-5. Add environment variables from `.env.example`.
-6. Deploy.
+3. Root: repository root.
+4. Build: `npm run build`.
+5. Node 22.
+6. Add `.env.example` values as Vercel environment variables.
+7. Configure Basic Auth variables for the early single-user deployment.
 
 ## Supabase
 
-Create a project and run:
+Run all three migration files in order, not only `001_init.sql`.
 
-`supabase/migrations/001_init.sql`
-
-Add production RLS policies before storing real research data.
-
-## Secrets
-
-Never commit:
-- Apify token
-- Supabase service role key
-- AI API key
-- Facebook/browser cookies
-
-## First production integration
-
-Use one known public Facebook Group or a controlled dataset. Run a small collection, save the raw JSON sample, then update the mapper in `packages/connectors/src/apifyFacebookGroups.ts`. Do not guess provider field names.
+Do not expose `SUPABASE_SERVICE_ROLE_KEY` to browser code.

@@ -1,12 +1,19 @@
-import { ArrowUpRight, Lightbulb } from "lucide-react";
-import { insights } from "@/lib/data";
-export default function InsightsPage(){return <div className="page">
- <div className="page-head"><div><div className="eyebrow">Evidence-backed knowledge</div><h1>Insight Library</h1><div className="subhead">Validated hypotheses with evidence strength, contradictions and source traceability.</div></div><button className="btn primary"><Lightbulb size={15}/> New research question</button></div>
- <div className="grid">{insights.map(i=><div className="card" key={i.id}>
-  <div style={{display:"flex",justifyContent:"space-between",gap:20,alignItems:"flex-start"}}>
-   <div style={{maxWidth:900}}><div style={{display:"flex",gap:8,alignItems:"center"}}><span className="mono">{i.id}</span><span className={`badge ${i.status==="Validated"?"green":"orange"}`}>{i.status}</span><span className="badge">{i.strength} evidence</span></div><h2 style={{fontSize:21,marginTop:12}}>{i.title}</h2><p className="subhead" style={{lineHeight:1.65}}>{i.summary}</p></div>
-   <button className="icon-btn"><ArrowUpRight size={17}/></button>
-  </div>
-  <div className="mini-grid" style={{marginTop:16,maxWidth:650}}><div className="mini-metric"><b>{i.evidence}</b><span>Evidence</span></div><div className="mini-metric"><b>{i.communities}</b><span>Communities</span></div><div className="mini-metric"><b>{i.contradictions}</b><span>Contradictions</span></div><div className="mini-metric"><b>30d</b><span>Research window</span></div></div>
- </div>)}</div>
+"use client";
+import { useEffect, useState } from "react";
+import { ArrowUpRight, Database, Lightbulb, Plus, X } from "lucide-react";
+
+type Insight={id:string;title:string;summary:string;status:string;strength:string;evidence:number;communities:number;contradictions:number;evidenceStale?:boolean;createdAt?:string};
+export default function InsightsPage(){
+ const [items,setItems]=useState<Insight[]>([]);const [mode,setMode]=useState("");const [open,setOpen]=useState(false);const [title,setTitle]=useState("");const [hypothesis,setHypothesis]=useState("");const [busy,setBusy]=useState(false);const [message,setMessage]=useState("");
+ const load=()=>fetch("/api/insights").then(r=>r.json()).then(d=>{setItems(d.insights??[]);setMode(d.mode??"")});useEffect(()=>{void load()},[]);
+ const create=async()=>{setBusy(true);const res=await fetch("/api/insights",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({title,hypothesis,summary:hypothesis,status:"draft"})});const d=await res.json();if(res.ok){setOpen(false);setTitle("");setHypothesis("");setMessage("Insight stored in the Knowledge Base");await load()}else setMessage(d.error??"Could not create insight");setBusy(false);setTimeout(()=>setMessage(""),3000)};
+ return <div className="page">
+ <div className="page-head"><div><div className="eyebrow">Evidence-backed knowledge</div><h1>Insight Library</h1><div className="subhead">Validated hypotheses are durable Knowledge Base objects linked back to evidence—not one-time AI answers.</div></div><button className="btn primary" onClick={()=>setOpen(true)}><Plus size={15}/> Add insight</button></div>
+ <div className={`mode-banner ${mode==="supabase"?"good":"warn"}`}><Database size={18}/><div><b>{mode==="supabase"?"Knowledge Base persistence active":"Demo Insight Library"}</b><span>{mode==="supabase"?" · Insight state survives refresh and can accumulate new evidence over time.":" · Configure Supabase before treating these examples as durable research records."}</span></div></div>
+ <div className="grid section-space">{items.map(i=><div className="card" key={i.id}>
+  <div style={{display:"flex",justifyContent:"space-between",gap:20,alignItems:"flex-start"}}><div style={{maxWidth:900}}><div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}><span className="mono">{i.id}</span><span className={`badge ${i.status.toLowerCase()==="validated"?"green":"orange"}`}>{i.status}</span><span className="badge">{i.strength} evidence</span>{i.evidenceStale&&<span className="badge red">EVIDENCE CHANGED · REVIEW</span>}</div><h2 style={{fontSize:21,marginTop:12}}>{i.title}</h2><p className="subhead" style={{lineHeight:1.65}}>{i.summary}</p></div><button className="icon-btn"><ArrowUpRight size={17}/></button></div>
+  <div className="mini-grid" style={{marginTop:16,maxWidth:650}}><div className="mini-metric"><b>{i.evidence}</b><span>Supporting evidence</span></div><div className="mini-metric"><b>{i.communities}</b><span>Communities</span></div><div className="mini-metric"><b>{i.contradictions}</b><span>Contradictions</span></div><div className="mini-metric"><b>{i.createdAt?String(i.createdAt).slice(0,10):"30d"}</b><span>Created / window</span></div></div>
+ </div>)}{items.length===0&&<div className="card empty"><Lightbulb size={22}/><p>No persistent insights yet. Acquire evidence first, then add or generate an evidence-backed hypothesis.</p></div>}</div>
+ {open&&<div className="modal-backdrop" onMouseDown={()=>setOpen(false)}><div className="modal" onMouseDown={e=>e.stopPropagation()}><div className="modal-head"><div><div className="eyebrow">Knowledge Base</div><h2>Add manual hypothesis</h2></div><button className="icon-btn" onClick={()=>setOpen(false)}><X size={16}/></button></div><div className="form-grid"><label>Insight title<input className="input" value={title} onChange={e=>setTitle(e.target.value)} placeholder="What appears to be true?"/></label><label>Hypothesis / reasoning<textarea className="textarea" rows={6} value={hypothesis} onChange={e=>setHypothesis(e.target.value)} placeholder="State the hypothesis. Evidence links can be attached by the research pipeline."/></label><button className="btn primary" disabled={busy||title.length<3||hypothesis.length<3||mode!=="supabase"} onClick={create}>{busy?"Saving…":"Save durable insight"}</button>{mode!=="supabase"&&<div className="row-meta">Persistent creation is disabled in demo mode.</div>}</div></div></div>}
+ {message&&<div className="toast">{message}</div>}
  </div>}

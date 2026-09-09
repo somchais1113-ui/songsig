@@ -1,2 +1,3 @@
 import { NextResponse } from "next/server";
-export async function GET(){return NextResponse.json({ok:true,service:"consumer-signal-engine",version:"0.2.0"})}
+import { acquisitionConfigured, persistenceConfigured } from "@/lib/env";
+export async function GET(){return NextResponse.json({ok:true,service:"consumer-signal-engine",version:"0.3.0",persistence:persistenceConfigured?"supabase":"demo-local",acquisition:acquisitionConfigured?"apify":"not-configured"})}

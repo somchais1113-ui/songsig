@@ -1,39 +1,59 @@
-# Data model
+# Data Model v0.3
+
+## Workspace
+Ownership boundary for the Data Library and research outputs.
 
 ## ResearchProject
-Defines the business question and scope.
+A business question or decision lens. It references evidence; it does not own/duplicate source data.
 
 ## Source
-A community, import file, channel, review site or other acquisition target.
+Reusable acquisition target: Facebook Group, imported dataset, channel, review source, etc.
 
-## IngestionRun
-Audit trail for every collection job.
+Key states:
+- accessibility status
+- watch enabled
+- last successful sync
+- last seen published timestamp
+- provider capability metadata
+
+## CollectionJob
+Durable workflow object created before an external provider run. Stores requested scope, estimated cost, provider run ID and terminal status.
+
+## CollectionRun
+Audit record of finalized data retrieval: requested/collected counts, duplicate count, coverage state and provider dataset ID.
+
+## RawAsset
+Metadata for an immutable JSON snapshot in private Supabase Storage.
 
 ## RawItem
-Immutable evidence from a provider. Store the original payload only as long as needed.
+Provider evidence row. Contains original text, provider payload and content hash.
 
 ## Observation
-Normalized research unit. This is where topic, intent, sentiment, pain intensity and human review status live.
+Normalized/anonymized analysis unit. This is what downstream AI/research works on.
+
+## ObservationTag
+Structured taxonomy key/value attached to an observation.
+
+## ObservationEmbedding
+Vector plus model/provider metadata for semantic search.
+
+## ProjectObservation / ProjectSource
+Many-to-many links allowing a project to reuse existing evidence.
 
 ## Cluster
-A semantic/topic grouping of observations.
+Semantic/topic grouping of observations.
 
 ## Insight
-An evidence-backed hypothesis, not a generic summary.
+Evidence-backed hypothesis, stored durably rather than regenerated every session.
 
 ## InsightEvidence
-Traceability between a claim and supporting/contradicting observations.
+Links an insight to supporting, contradicting, or contextual observations.
 
 ## Challenge
-Alternative explanations, bias risks or missing evidence.
+Alternative explanations, bias risks, or missing evidence.
 
 ## Opportunity
-Decision layer. Ranked separately from mention volume.
+Decision layer with separate volume / pain / growth / unmet-need components.
 
-Recommended opportunity components:
-- volume
-- pain intensity
-- growth
-- unmet need
-
-Do not interpret the score as certainty. It is prioritization support.
+## SignalDefinition + SignalMetricDaily
+Historical metric layer used for actual trend comparisons over time.

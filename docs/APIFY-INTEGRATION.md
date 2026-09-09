@@ -1,61 +1,58 @@
-# Apify integration guide
+# Apify Integration v0.3
 
-## Goal
-
-Apify is an acquisition provider, not part of the research domain. The application must remain functional if the selected Actor changes.
-
-## Required variables
+## Default Actor
 
 ```env
-APIFY_TOKEN=...
 APIFY_FACEBOOK_GROUPS_ACTOR_ID=apify/facebook-groups-scraper
 ```
 
-## Integration workflow
+The official API page currently demonstrates inputs including:
 
-1. Choose the Actor you want to use.
-2. Run a small sample manually in Apify first.
-3. Export 10–20 records of real JSON.
-4. Compare the result with `RawSourceItem` in `packages/connectors/src/types.ts`.
-5. Update only `packages/connectors/src/apifyFacebookGroups.ts`.
-6. Preserve the full original provider payload in `metadata` / `raw_payload` for auditability.
-7. Normalize author identity before it reaches the analysis layer.
-
-## Why the mapper is intentionally conservative
-
-Facebook actors return different keys for post IDs, timestamps, engagement and group metadata. Freezing an assumed schema before a real run is a common failure mode. This package therefore includes field candidates but expects a real sample before production.
-
-## Recommended input strategy
-
-Start with one public group and a narrow research period. Prove the pipeline before increasing volume.
-
-Suggested run sequence:
-
-```text
-Group URL
-  -> Apify Actor
-  -> dataset JSON
-  -> connector mapper
-  -> raw_items
-  -> anonymize / normalize
-  -> observations
-  -> AI tagging
-  -> human review
+```json
+{
+  "startUrls": [{"url":"https://www.facebook.com/groups/..."}],
+  "resultsLimit": 20,
+  "viewOption": "CHRONOLOGICAL"
+}
 ```
 
-## Incremental ingestion
+The v0.3 connector also exposes optional date/keyword fields used by the Actor input schema.
 
-In production, keep a source-specific cursor / latest timestamp in `sources.config` and avoid reprocessing the entire group. Use `external_id` plus the database unique constraint to deduplicate.
+Reference: https://apify.com/apify/facebook-groups-scraper/api
 
-## Error handling
+## Why async
 
-Record every job in `ingestion_runs`. Never silently discard:
-- provider failures;
-- missing dataset IDs;
-- malformed output;
-- empty text;
-- rate/usage limits.
+`/api/collections/start` starts an Actor and immediately persists the run ID.
 
-## Private or restricted groups
+`/api/collections/<jobId>/refresh` checks the provider later, then ingests the dataset when it succeeds.
 
-Do not design the product around bypassing access controls. Treat restricted-source acquisition as an optional connector with explicit authorization, legal review and a privacy policy. Never commit browser cookies or session credentials to GitHub.
+This means a normal browser refresh does not delete or cancel the external run.
+
+## Output mapping
+
+Actor output schemas can change. Mapping is isolated in:
+
+```text
+packages/connectors/src/apifyFacebookGroups.ts
+```
+
+The normalizer accepts several candidate field names and preserves the original dataset row inside `metadata`, which is later stored in `raw_payload`.
+
+Before scaling, run the `REAL-DATA-TEST.md` procedure and verify a real output sample.
+
+## Cost guardrail
+
+The UI calls `/api/collections/estimate` before starting. The configured rate is an estimate only and can be changed with:
+
+```env
+APIFY_FACEBOOK_ESTIMATED_USD_PER_1000_POSTS=2.60
+COLLECTION_MAX_POSTS_PER_RUN=2000
+```
+
+## Incremental mode
+
+The engine uses `last_seen_published_at` as a time boundary where possible, but still deduplicates overlaps by hash.
+
+## Access limits
+
+Do not infer that a group is complete merely because the URL is public. Store explicit access/coverage status and preserve provider failure messages.

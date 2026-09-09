@@ -1,14 +1,14 @@
 {
   "name": "consumer-signal-engine",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "npm --workspace @cse/web run dev",
     "build": "npm --workspace @cse/web run build",
     "start": "npm --workspace @cse/web run start",
-    "lint": "npm --workspace @cse/web run lint",
-    "typecheck": "npm --workspace @cse/web run typecheck"
+    "typecheck": "npm --workspace @cse/web run typecheck",
+    "check": "npm run typecheck && npm run build"
   },
   "engines": {"node": ">=20"}
 }
