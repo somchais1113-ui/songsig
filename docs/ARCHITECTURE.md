@@ -1,19 +1,59 @@
 # Architecture
 
-## Layers
+## Product principle
 
-1. **Acquisition** — Apify / CSV / future APIs
-2. **Normalization** — map provider-specific data into RawSocialItem
-3. **Privacy transform** — hash/remove unnecessary personal identifiers
-4. **Raw storage** — immutable provider payload for traceability
-5. **Observation layer** — normalized research unit
-6. **AI Tagging** — topic, pain point, JTBD, intent, sentiment
-7. **Human Review** — relevant / noise / interesting / investigate
-8. **Researcher** — pattern and hypothesis generation
-9. **Challenger** — counter-evidence and alternative explanation
-10. **Insight graph** — explicit evidence links
-11. **Opportunity layer** — product/marketing/design decision support
+The engine is not a scraper dashboard. It is a decision-support system with evidence traceability.
 
-## Design principle
+```text
+Data Sources
+   │
+   ├─ Facebook Groups / Apify
+   ├─ CSV / Manual Research
+   ├─ YouTube
+   ├─ Reddit
+   └─ Future providers
+   ↓
+Connector Layer
+   ↓
+Raw Items (immutable evidence)
+   ↓
+Normalization / anonymization / deduplication
+   ↓
+Observations
+   ↓
+AI Tagging + Clustering
+   ↓
+Human Review
+   ↓
+Researcher Agent
+   ↓
+Challenger Agent
+   ↓
+Validated Insight
+   ↓
+Opportunity Scoring
+   ↓
+Product / Marketing / Design action
+```
 
-Never let a provider-specific schema leak into the insight layer. This allows switching Apify actors or replacing Apify entirely without rewriting analytics.
+## Why raw and observation layers are separate
+
+`raw_items` preserve original evidence and provider payloads. `observations` contain normalized, anonymized, research-ready text and annotations. This allows the taxonomy to evolve without destroying the original source.
+
+## Connector boundary
+
+Every external source must map into the `RawSourceItem` contract. Provider-specific schemas remain inside the connector package. Do not leak Apify-specific fields into research logic.
+
+## AI boundary
+
+The first AI pass is organizational, not strategic. Tagger classifies. Researcher proposes hypotheses. Challenger attempts to falsify them. Humans retain authority over validation.
+
+## Deployment target
+
+- Web: Vercel
+- Database: Supabase PostgreSQL
+- Ingestion: Vercel route for light jobs; queue/worker for production workloads
+- External collection: Apify or replaceable provider
+- AI: provider-agnostic adapter
+
+For high-volume ingestion, move collection and analysis into background jobs rather than a request/response Vercel function.

@@ -1,18 +1,17 @@
-export type RawSocialItem = {
-  source: string;
+export type RawSourceItem = {
+  provider: string;
   externalId: string;
-  sourceUrl?: string;
-  groupId?: string;
-  groupName?: string;
-  text: string;
-  authorName?: string;
+  sourceId?: string;
+  sourceName?: string;
+  url?: string;
   publishedAt?: string;
-  reactions?: number;
-  comments?: number;
-  shares?: number;
-  raw: unknown;
+  authorHash?: string;
+  text: string;
+  engagement?: Record<string, number>;
+  metadata?: Record<string, unknown>;
 };
 
-export interface SourceConnector<TInput = unknown> {
-  collect(input: TInput): Promise<RawSocialItem[]>;
+export interface ConversationConnector {
+  name: string;
+  collect(input: Record<string, unknown>): Promise<RawSourceItem[]>;
 }

@@ -1,35 +1,54 @@
-# Consumer Signal Engine
+# Consumer Signal Engine v0.2.0
 
-A repo-ready MVP foundation for turning social/market conversations into evidence-backed consumer insights.
+Evidence-backed consumer research workspace for turning social and market conversations into decisions.
 
-## Locked architecture
+This package is a **functional product prototype**, not a placeholder. It includes a modern multi-page Next.js dashboard, realistic mock research data, interaction states, ingestion endpoints, an Apify Facebook Groups connector, a Supabase/PostgreSQL schema, and documentation for adapting the project into a production system.
 
-- **Facebook Groups acquisition:** Apify Actor API (adapter-based; actor ID configurable)
-- **Other sources:** future adapters for Reddit, YouTube, RSS, CSV/manual import
-- **Database:** Supabase PostgreSQL
-- **Frontend/API:** Next.js + TypeScript
-- **AI layer:** provider-agnostic interfaces for tagging, clustering, research, challenge, opportunity scoring
-- **Privacy:** anonymize authors before persistence in the observation layer
+## What is included
 
-## Why this stack
+- Overview dashboard with signal KPIs, trend chart, emerging themes, source health and opportunity ranking
+- Source management for Facebook Groups, CSV/manual import, YouTube, Reddit and future connectors
+- Raw Signals browser with search and filters
+- Human Review queue with Validate / Watch / Reject actions
+- Research workspace with hypothesis, AI challenger, evidence strength and supporting observations
+- Insights library with evidence traceability
+- Opportunity board with scoring model
+- Settings page for connector and model configuration
+- `/api/ingest/apify` endpoint scaffold
+- `packages/connectors` provider abstraction
+- `packages/core` domain models and scoring utilities
+- `packages/ai` analysis contracts
+- Supabase migration covering sources, raw items, observations, clusters, insights, evidence and opportunities
+- CI workflow and GitHub/Vercel setup docs
 
-We avoid building brittle Facebook scraping logic ourselves. The Facebook connector talks to Apify through a small adapter, so the actor can be replaced without changing the rest of the product.
+## Run locally
 
-Open-source projects used as architectural references only:
-- Harken (MIT): adapter-oriented social listening architecture
-- OpenMagpie (Apache-2.0): monitoring/watch concepts
-- Radar Intelligence (AGPL-3.0): studied only; no source copied into this package
+```bash
+cp .env.example .env.local
+npm install
+npm run dev
+```
 
-## Quick start
+Then open `http://localhost:3000`.
 
-1. Copy `.env.example` to `.env.local`
-2. Fill Supabase and Apify variables
-3. Run SQL in `supabase/migrations/001_init.sql`
-4. `npm install`
-5. `npm run dev`
+The prototype works with mock data without any credentials.
 
-## MVP flow
+## Production path
 
-Facebook Group URL -> Apify -> Normalizer -> Supabase -> AI Tagging -> Human Review -> Insight -> Evidence -> Opportunity
+1. Create a Supabase project and run `supabase/migrations/001_init.sql`.
+2. Add `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY`.
+3. Add an Apify token and choose a Facebook Groups actor.
+4. Map the actor's real JSON output in `packages/connectors/src/apifyFacebookGroups.ts`.
+5. Replace mock repository functions in `apps/web/lib/data.ts` with database queries.
+6. Connect your preferred AI provider in `packages/ai`.
+7. Deploy the web app to Vercel.
 
-See `docs/ARCHITECTURE.md`, `docs/API-REPO-SELECTION.md`, and `docs/GITHUB-SETUP.md`.
+See `/docs` for architecture and implementation notes.
+
+## License note
+
+This package is original clean-room code. Harken and OpenMagpie were used as architectural references only; no source code from those repositories is copied into this package. Radar Intelligence is intentionally not embedded because of its AGPL-3.0 licensing implications for modified network services.
+
+## Version
+
+`0.2.0` — Functional Prototype

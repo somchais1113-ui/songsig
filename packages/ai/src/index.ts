@@ -1,6 +1,32 @@
-export type TaggingResult = { topics:string[]; painPoints:string[]; jobsToBeDone:string[]; intent?:string; sentiment?:string; confidence:number };
-export type InsightHypothesis = { title:string; statement:string; evidenceIds:string[]; counterEvidenceIds:string[]; confidence:number };
+import type { Observation, Insight } from "@cse/core";
 
-export interface Tagger { tag(text:string): Promise<TaggingResult>; }
-export interface Researcher { propose(observations:{id:string;text:string}[]): Promise<InsightHypothesis[]>; }
-export interface Challenger { challenge(hypothesis:InsightHypothesis, observations:{id:string;text:string}[]): Promise<InsightHypothesis>; }
+export type TaggingResult = Pick<Observation, "topic"|"intent"|"sentiment"|"painIntensity"|"confidence"|"tags">;
+
+export interface Tagger {
+  tag(text: string): Promise<TaggingResult>;
+}
+
+export type ResearchResult = {
+  hypothesis: string;
+  evidenceIds: string[];
+  contradictions: string[];
+  confidence: number;
+};
+
+export interface Researcher {
+  analyze(observations: Observation[]): Promise<ResearchResult>;
+}
+
+export type ChallengeResult = {
+  risks: string[];
+  alternativeExplanations: string[];
+  additionalEvidenceNeeded: string[];
+};
+
+export interface Challenger {
+  challenge(result: ResearchResult, observations: Observation[]): Promise<ChallengeResult>;
+}
+
+export interface InsightRepository {
+  save(insight: Insight): Promise<void>;
+}

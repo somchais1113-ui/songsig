@@ -1,29 +1,40 @@
-# API & Repo Selection
+# API and Repository Selection
 
-## 1. Facebook Groups — Apify Actor API (PRIMARY)
+## 1. Facebook Groups acquisition — Apify
 
-Use an Apify Facebook Groups actor through the connector abstraction. Default env value is `simpleapi/facebook-groups-scraper`, but this is deliberately configurable because actor quality/pricing can change.
+**Use:** External acquisition layer.
 
 Why:
-- programmatic REST API
-- dataset output
-- timeframe / result controls on compatible actors
-- avoids maintaining brittle Facebook DOM automation ourselves
+- avoids maintaining brittle browser selectors in the core application;
+- callable through API;
+- provider can be replaced without redesigning the database;
+- suitable for prototyping public-group research and provider-specific compliant workflows.
 
-Do not hard-code the actor's response schema. Normalize it in `packages/connectors`.
+Implementation:
+- `APIFY_FACEBOOK_GROUPS_ACTOR_ID` is configurable.
+- inspect the selected Actor's live output before freezing the mapper.
+- do not store credentials in frontend code.
 
-## 2. Harken — architecture reference (YES)
+## 2. Harken — architectural reference
 
-License: MIT. Use ideas such as source adapters, normalized mention models, health/retry boundaries. We do not vendor its source in this package.
+Use its adapter/normalization philosophy as inspiration, not copied code. The engine in this package implements its own connector contract.
 
-## 3. OpenMagpie — architecture reference (YES)
+## 3. OpenMagpie — architectural reference
 
-License: Apache-2.0. Use concepts around watches, semantic filtering, monitoring and webhook/action flows. We do not vendor its source.
+Use its watch/filter/action pattern as inspiration for future monitoring and alerts.
 
-## 4. Radar Intelligence — research reference only (NO CODE)
+## 4. Radar Intelligence — do not embed
 
-License: AGPL-3.0. A modified version exposed as a network service triggers AGPL source-sharing obligations. We therefore do not copy or vendor Radar source into this package.
+Do not copy or fork code into this package unless you deliberately choose to comply with AGPL-3.0 obligations. It can still be studied as a product/architecture reference.
 
-## Selection rule
+## 5. Supabase
 
-Acquisition providers are replaceable plugins. Consumer Signal taxonomy, evidence graph, human review, challenger logic and opportunity scoring remain our own product layer.
+Use PostgreSQL as the canonical research database. The schema deliberately separates raw evidence, normalized observations, insights and opportunities.
+
+## 6. AI provider
+
+Keep provider-agnostic. Implement Tagger, Researcher and Challenger interfaces. This prevents the research workflow from depending on one model vendor.
+
+## Facebook access warning
+
+Facebook data access is volatile. Public/private availability, terms, authentication and actor behavior can change. Treat Facebook collection as a replaceable connector and confirm current platform rules before production use. Avoid collecting unnecessary personal identifiers; prefer aggregate research and anonymized evidence.
